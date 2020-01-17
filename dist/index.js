@@ -2984,6 +2984,10 @@ function run() {
 function processIssue(client, config, issueId) {
     return __awaiter(this, void 0, void 0, function* () {
         let issue = yield getIssue(client, issueId);
+        if (issue.labels.length > 0) {
+            console.log('This issue already has labels, skipping...');
+            return;
+        }
         let matchingLabels = [];
         let lines = issue.body.split(/\r?\n|\r/g);
         for (let label of config.labels) {

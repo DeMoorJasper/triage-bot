@@ -53,6 +53,11 @@ async function processIssue(
 ) {
   let issue: Issue = await getIssue(client, issueId);
 
+  if (issue.labels.length > 0) {
+    console.log('This issue already has labels, skipping...');
+    return;
+  }
+
   let matchingLabels: Array<string> = [];
   let lines = issue.body.split(/\r?\n|\r/g);
   for (let label of config.labels) {
