@@ -4,7 +4,6 @@ import * as Octokit from '@octokit/rest';
 import matcher from 'matcher';
 
 type Issue = Octokit.IssuesGetResponse;
-type IssueLabel = Octokit.IssuesListForRepoResponseItemLabelsItem;
 
 type Args = {
   repoToken: string;
@@ -15,6 +14,7 @@ type TriageBotConfig = {
   labels: Array<{
     label: string;
     globs: Array<string>;
+    message?: string;
   }>;
   no_label_message?: string;
 };
@@ -59,10 +59,15 @@ async function processIssue(
   }
 
   let matchingLabels: Array<string> = [];
+  let comments: Array<string> = [];
   let lines = issue.body.split(/\r?\n|\r/g);
   for (let label of config.labels) {
     if (matcher(lines, label.globs).length > 0) {
       matchingLabels.push(label.label);
+
+      if (label.message) {
+        comments.push(label.message);
+      }
     }
   }
 
@@ -71,24 +76,44 @@ async function processIssue(
       `Adding labels ${matchingLabels.join(', ')} to issue #${issue.number}`
     );
 
-    await client.issues.addLabels({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: issue.number,
-      labels: matchingLabels
-    });
+    await addLabels(client, issue.number, matchingLabels);
+
+    if (comments.length) {
+      await writeComment(client, issue.number, comments.join('\n\n'));
+    }
   } else if (config.no_label_message) {
     console.log(
       `Adding comment to issue #${issue.number}, because no labels match`
     );
 
-    await client.issues.createComment({
-      owner: github.context.repo.owner,
-      repo: github.context.repo.repo,
-      issue_number: issue.number,
-      body: config.no_label_message
-    });
+    await writeComment(client, issue.number, config.no_label_message);
   }
+}
+
+async function writeComment(
+  client: github.GitHub,
+  issueId: number,
+  body: string
+) {
+  await client.issues.createComment({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    issue_number: issueId,
+    body: body
+  });
+}
+
+async function addLabels(
+  client: github.GitHub,
+  issueId: number,
+  labels: Array<string>
+) {
+  await client.issues.addLabels({
+    owner: github.context.repo.owner,
+    repo: github.context.repo.repo,
+    issue_number: issueId,
+    labels
+  });
 }
 
 async function getIssue(

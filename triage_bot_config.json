@@ -10,7 +10,8 @@
       "label": ":bug: Bug",
       "globs": [
         "*# Bug*"
-      ]
+      ],
+      "message": "Thank you for creating a bug report, if you haven't already please ensure you have provided context on the bug and a minimal repo where we can reproduce the issue."
     }
   ],
   "no_label_message": "We could not automatically detect a matching label for this issue, please use the provided issue templates."

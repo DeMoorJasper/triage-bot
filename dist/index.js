@@ -2989,30 +2989,47 @@ function processIssue(client, config, issueId) {
             return;
         }
         let matchingLabels = [];
+        let comments = [];
         let lines = issue.body.split(/\r?\n|\r/g);
         for (let label of config.labels) {
             if (matcher_1.default(lines, label.globs).length > 0) {
                 matchingLabels.push(label.label);
+                if (label.message) {
+                    comments.push(label.message);
+                }
             }
         }
         if (matchingLabels.length > 0) {
             console.log(`Adding labels ${matchingLabels.join(', ')} to issue #${issue.number}`);
-            yield client.issues.addLabels({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                issue_number: issue.number,
-                labels: matchingLabels
-            });
+            yield addLabels(client, issue.number, matchingLabels);
+            if (comments.length) {
+                yield writeComment(client, issue.number, comments.join('\n\n'));
+            }
         }
         else if (config.no_label_message) {
             console.log(`Adding comment to issue #${issue.number}, because no labels match`);
-            yield client.issues.createComment({
-                owner: github.context.repo.owner,
-                repo: github.context.repo.repo,
-                issue_number: issue.number,
-                body: config.no_label_message
-            });
+            yield writeComment(client, issue.number, config.no_label_message);
         }
+    });
+}
+function writeComment(client, issueId, body) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield client.issues.createComment({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number: issueId,
+            body: body
+        });
+    });
+}
+function addLabels(client, issueId, labels) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield client.issues.addLabels({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number: issueId,
+            labels
+        });
     });
 }
 function getIssue(client, issueId) {
