@@ -2989,7 +2989,7 @@ function processIssue(client, config, issueId) {
             return;
         }
         let matchingLabels = [];
-        let comments = [];
+        let comments = config.comment ? [config.comment] : [];
         let lines = issue.body.split(/\r?\n|\r/g);
         for (let label of config.labels) {
             if (matcher_1.default(lines, label.globs).length > 0) {
@@ -3006,9 +3006,9 @@ function processIssue(client, config, issueId) {
                 yield writeComment(client, issue.number, comments.join('\n\n'));
             }
         }
-        else if (config.no_label_message) {
+        else if (config.no_label_comment) {
             console.log(`Adding comment to issue #${issue.number}, because no labels match`);
-            yield writeComment(client, issue.number, config.no_label_message);
+            yield writeComment(client, issue.number, config.no_label_comment);
         }
     });
 }

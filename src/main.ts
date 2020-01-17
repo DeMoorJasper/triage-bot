@@ -16,7 +16,8 @@ type TriageBotConfig = {
     globs: Array<string>;
     message?: string;
   }>;
-  no_label_message?: string;
+  comment?: string;
+  no_label_comment?: string;
 };
 
 async function run() {
@@ -59,7 +60,7 @@ async function processIssue(
   }
 
   let matchingLabels: Array<string> = [];
-  let comments: Array<string> = [];
+  let comments: Array<string> = config.comment ? [config.comment] : [];
   let lines = issue.body.split(/\r?\n|\r/g);
   for (let label of config.labels) {
     if (matcher(lines, label.globs).length > 0) {
@@ -81,12 +82,12 @@ async function processIssue(
     if (comments.length) {
       await writeComment(client, issue.number, comments.join('\n\n'));
     }
-  } else if (config.no_label_message) {
+  } else if (config.no_label_comment) {
     console.log(
       `Adding comment to issue #${issue.number}, because no labels match`
     );
 
-    await writeComment(client, issue.number, config.no_label_message);
+    await writeComment(client, issue.number, config.no_label_comment);
   }
 }
 
