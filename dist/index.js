@@ -2994,8 +2994,8 @@ function processIssue(client, config, issueId) {
         for (let label of config.labels) {
             if (matcher_1.default(lines, label.globs).length > 0) {
                 matchingLabels.push(label.label);
-                if (label.message) {
-                    comments.push(label.message);
+                if (label.comment) {
+                    comments.push(label.comment);
                 }
             }
         }

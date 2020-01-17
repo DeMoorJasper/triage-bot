@@ -14,7 +14,7 @@ type TriageBotConfig = {
   labels: Array<{
     label: string;
     globs: Array<string>;
-    message?: string;
+    comment?: string;
   }>;
   comment?: string;
   no_label_comment?: string;
@@ -66,8 +66,8 @@ async function processIssue(
     if (matcher(lines, label.globs).length > 0) {
       matchingLabels.push(label.label);
 
-      if (label.message) {
-        comments.push(label.message);
+      if (label.comment) {
+        comments.push(label.comment);
       }
     }
   }
