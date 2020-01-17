@@ -1,0 +1,17 @@
+{
+  "labels": [
+    {
+      "label": "feature",
+      "globs": [
+        "*# Feature*"
+      ]
+    },
+    {
+      "label": "bug",
+      "globs": [
+        "*# Bug*"
+      ]
+    }
+  ],
+  "no_label_message": "We could not automatically detect a matching label for this issue, please use the provided issue templates."
+}

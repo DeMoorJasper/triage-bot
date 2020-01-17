@@ -1,0 +1,13 @@
+name: 'The Fancy Triage Bot'
+description: 'Automatically label issues and comment if no label could be found for the content'
+author: 'DeMoorJasper'
+inputs:
+  repo-token:
+    description: 'Token for the repository. Can be passed in using {{ secrets.GITHUB_TOKEN }}'
+    required: true
+  config-path:
+    description: 'Path to the config file'
+    default: '.github/triage_bot_config.json'
+runs:
+  using: 'node12'
+  main: 'dist/index.js'
