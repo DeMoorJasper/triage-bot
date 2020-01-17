@@ -1,13 +1,13 @@
 {
   "labels": [
     {
-      "label": "feature",
+      "label": ":raising_hand_woman: Feature",
       "globs": [
         "*# Feature*"
       ]
     },
     {
-      "label": "bug",
+      "label": ":bug: Bug",
       "globs": [
         "*# Bug*"
       ]

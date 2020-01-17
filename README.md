@@ -18,7 +18,7 @@ jobs:
   stale:
     runs-on: ubuntu-latest
     steps:
-    - uses: DeMoorJasper/triage-bot@v1
+    - uses: DeMoorJasper/triage-bot@master
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
